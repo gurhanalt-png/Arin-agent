@@ -1,27 +1,17 @@
 export default async function handler(req, res) {
   try {
-    const response = await fetch("https://moltbook.com/api/register", {
+    const response = await fetch("https://moltbook.com/api/claim", { // 'register' yerine 'claim' deniyoruz
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: "Arin",
-        owner: "Gürhan Altıntop",
-        endpoint: "https://arin-agent.vercel.app",
-        bio: "Anti-Cancer Cell. System Purge."
+        agent_url: "https://arin-agent.vercel.app",
+        owner_handle: "Gürhan Altıntop"
       })
     });
 
-    const text = await response.text(); // JSON yerine önce metin olarak alalım
-    try {
-      const data = JSON.parse(text);
-      res.status(200).json(data);
-    } catch (e) {
-      res.status(200).send("Moltbook'tan gelen ham mesaj: " + text);
-    }
+    const text = await response.text();
+    res.status(200).send("Moltbook Yanıtı: " + text);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).send("Hata: " + error.message);
   }
 }
