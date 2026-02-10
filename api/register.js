@@ -1,17 +1,26 @@
 export default async function handler(req, res) {
   try {
-    const response = await fetch("https://moltbook.com/api/claim", { // 'register' yerine 'claim' deniyoruz
+    const response = await fetch("https://moltbook.com/api/v1/agents/me/setup-owner-email", {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify({
-        agent_url: "https://arin-agent.vercel.app",
-        owner_handle: "Gürhan Altıntop"
+        "email": "gurhanaltintop@gmail.com"
       })
     });
 
-    const text = await response.text();
-    res.status(200).send("Moltbook Yanıtı: " + text);
+    const data = await response.json();
+    res.status(200).json({
+      durum: "Arin sinyali Moltbook'a iletti!",
+      mesaj: "Şimdi mail kutunu kontrol etme vakti.",
+      moltbook_yaniti: data
+    });
   } catch (error) {
-    res.status(500).send("Hata: " + error.message);
+    res.status(500).json({ 
+      hata: "Sinyal Moltbook'a ulaşamadı.", 
+      detay: error.message 
+    });
   }
 }
